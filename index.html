@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CONTINUUM — មន្ទីរពិសោធន៍រូបវិទ្យាគណនា និងសំឡេងឌីជីថល | Computational Physics & Acoustics Lab</title>
+  <meta
+    name="description"
+    content="Real-time WebGL2 Navier–Stokes fluid dynamics, 2D isotropic FDTD wave interference optics, 4th-order Yoshida symplectic N-body orbital mechanics, and Khmer Pinpeat Karplus–Strong physical-modeling acoustics."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Kantumruy+Pro:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles/main.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1 id="app-title">CONTINUUM</h1>
+      <span class="brand-divider" aria-hidden="true">/</span>
+      <p id="app-subtitle" class="brand-subtitle">
+        មន្ទីរពិសោធន៍រូបវិទ្យាគណនា និងសំឡេងរូបវិទ្យាពេលវេលាពិត
+      </p>
+    </div>
+
+    <div class="topbar-actions">
+      <button id="btn-audio" class="btn btn-audio" type="button">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="label-audio">បើកសំឡេង</span>
+      </button>
+      <button id="btn-pause" class="btn" type="button">ផ្អាក</button>
+      <button id="btn-step" class="btn" type="button">១ ជំហាន</button>
+      <button id="btn-reset" class="btn" type="button">កំណត់ឡើងវិញ</button>
+      <button id="btn-lang" class="btn is-active" type="button">English</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- Left Column: Multi-Physics Optical Bench & Roneat Resonator -->
+    <section class="stage-column" aria-label="Simulation Viewport">
+      <nav class="mode-tabs" role="tablist" aria-label="Physics Engines">
+        <button id="tab-fluid" class="mode-tab is-active" role="tab" aria-selected="true" data-mode="fluid" type="button">
+          <span class="mode-tab-title" data-i18n="modeFluid">ឌីណាមិកសន្ទនីយ៍</span>
+          <span class="mode-tab-sub" data-i18n="modeFluidSub">WebGL2 Navier–Stokes</span>
+        </button>
+        <button id="tab-wave" class="mode-tab" role="tab" aria-selected="false" data-mode="wave" type="button">
+          <span class="mode-tab-title" data-i18n="modeWave">រលក និងអុបទិក</span>
+          <span class="mode-tab-sub" data-i18n="modeWaveSub">2D FDTD អាំងទែផេរ៉ង់</span>
+        </button>
+        <button id="tab-nbody" class="mode-tab" role="tab" aria-selected="false" data-mode="nbody" type="button">
+          <span class="mode-tab-title" data-i18n="modeNBody">មេកានិចតារាវិទ្យា</span>
+          <span class="mode-tab-sub" data-i18n="modeNBodySub">Yoshida លំដាប់ទី ៤</span>
+        </button>
+      </nav>
+
+      <div id="viewport-stage" class="viewport-stage">
+        <canvas id="gl-canvas"></canvas>
+        <canvas id="sim-canvas" class="is-hidden"></canvas>
+
+        <div class="stage-hud-top">
+          <div id="equation-readout" class="equation-readout">
+            ∂u/∂t + (u·∇)u = −∇p + ν∇²u + f_conf,   ∇·u = 0
+          </div>
+        </div>
+
+        <div id="stage-hint" class="stage-hint">
+          អូសលើផ្ទៃដើម្បីបង្កើតលំហូរ ឬចាប់ទាញឧបសគ្គរង្វង់នៅក្នុងផ្លូវខ្យល់។
+        </div>
+      </div>
+
+      <!-- 8-Bar Khmer Roneat Ek / Karplus-Strong Resonator Dock -->
+      <div class="resonator-dock">
+        <div class="resonator-header">
+          <span class="resonator-title" data-i18n="secAcoustics">សំយោគសំឡេងរូបវិទ្យា (Karplus–Strong)</span>
+          <span class="resonator-caption" data-i18n="resonatorHint">
+            ចុចលើផ្លែរនាត ឬប្រើក្តារចុចលេខ 1–8 ដើម្បីប្រគំសំឡេងសំយោគផ្ទាល់ពីសមីការរលក
+          </span>
+        </div>
+        <div id="roneat-bars" class="roneat-bars" role="group" aria-label="Resonator Bars"></div>
+      </div>
+    </section>
+
+    <!-- Right Column: Solver Controls, Acoustics, and Real-Time Telemetry -->
+    <aside class="control-rail" aria-label="Instrument Parameters">
+      <!-- Dynamic Mode Presets -->
+      <section class="panel-section">
+        <h2 class="section-heading" data-i18n="secPresets">ការពិសោធន៍គំរូ</h2>
+        <div id="preset-container" class="preset-list"></div>
+      </section>
+
+      <!-- Fluid Controls -->
+      <section id="controls-fluid" class="panel-section">
+        <h2 class="section-heading" data-i18n="secParameters">ប៉ារ៉ាម៉ែត្ររូបវិទ្យា</h2>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span data-i18n="fluidVisLabel">របៀបបង្ហាញ</span>
+          </div>
+          <div class="seg-row">
+            <button id="vis-dye" class="btn is-active" data-vis="0" type="button" data-i18n="fluidVisDye">ពណ៌សន្ទនីយ៍</button>
+            <button id="vis-curl" class="btn" data-vis="1" type="button" data-i18n="fluidVisCurl">ដែនកួច</button>
+            <button id="vis-schlieren" class="btn" data-vis="2" type="button" data-i18n="fluidVisSchlieren">Schlieren</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-vorticity" data-i18n="fluidVorticity">កម្លាំងរក្សាកួច (Vorticity)</label>
+            <span id="val-vorticity" class="control-val">30</span>
+          </div>
+          <input id="slider-vorticity" type="range" min="0" max="60" step="1" value="30" />
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-dissipation" data-i18n="fluidDissipation">អត្រារលាយពណ៌</label>
+            <span id="val-dissipation" class="control-val">0.28</span>
+          </div>
+          <input id="slider-dissipation" type="range" min="0.02" max="1.20" step="0.02" value="0.28" />
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-jacobi" data-i18n="fluidIterations">ជំហានសម្ពាធ Poisson</label>
+            <span id="val-jacobi" class="control-val">24</span>
+          </div>
+          <input id="slider-jacobi" type="range" min="8" max="44" step="2" value="24" />
+        </div>
+      </section>
+
+      <!-- Wave Optics Controls -->
+      <section id="controls-wave" class="panel-section is-hidden">
+        <h2 class="section-heading" data-i18n="secTools">ឧបករណ៍អន្តរកម្ម</h2>
+        <div class="tool-grid" style="margin-bottom: 12px;">
+          <button id="wtool-pluck" class="btn is-active" data-wtool="pluck" type="button" data-i18n="waveToolPluck">បង្កើតរលក</button>
+          <button id="wtool-wall" class="btn" data-wtool="wall" type="button" data-i18n="waveToolWall">គូសជញ្ជាំង</button>
+          <button id="wtool-lens" class="btn" data-wtool="lens" type="button" data-i18n="waveToolLens">គូសកែវចំណាំងបែរ</button>
+          <button id="wtool-erase" class="btn" data-wtool="erase" type="button" data-i18n="waveToolErase">លុបឧបសគ្គ</button>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-wfreq" data-i18n="waveFreq">ប្រេកង់ប្រភពរលក</label>
+            <span id="val-wfreq" class="control-val">0.25 rad</span>
+          </div>
+          <input id="slider-wfreq" type="range" min="0.10" max="0.46" step="0.01" value="0.25" />
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-wspeed" data-i18n="waveSpeed">ល្បឿនរលកមជ្ឈដ្ឋាន</label>
+            <span id="val-wspeed" class="control-val">0.53 c</span>
+          </div>
+          <input id="slider-wspeed" type="range" min="0.12" max="0.38" step="0.01" value="0.28" />
+        </div>
+
+        <label class="toggle-row" for="chk-emitter">
+          <span data-i18n="waveEmitterToggle">បើកប្រភពរលកអចិន្ត្រៃយ៍</span>
+          <input id="chk-emitter" type="checkbox" checked />
+        </label>
+      </section>
+
+      <!-- N-Body Controls -->
+      <section id="controls-nbody" class="panel-section is-hidden">
+        <h2 class="section-heading" data-i18n="secParameters">ប៉ារ៉ាម៉ែត្ររូបវិទ្យា</h2>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-ndt" data-i18n="nbodyDt">ល្បឿនពេលវេលា (Δt)</label>
+            <span id="val-ndt" class="control-val">0.0018</span>
+          </div>
+          <input id="slider-ndt" type="range" min="0.0005" max="0.0045" step="0.0001" value="0.0018" />
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-ntrail" data-i18n="nbodyTrail">ប្រវែងគន្លងតារាវិថី</label>
+            <span id="val-ntrail" class="control-val">220</span>
+          </div>
+          <input id="slider-ntrail" type="range" min="30" max="420" step="10" value="220" />
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-nmass" data-i18n="nbodySlingshotMass">ម៉ាសភពបាញ់បញ្ចូលថ្មី</label>
+            <span id="val-nmass" class="control-val">0.08 M</span>
+          </div>
+          <input id="slider-nmass" type="range" min="0.005" max="0.60" step="0.005" value="0.08" />
+        </div>
+      </section>
+
+      <!-- Acoustics & Phase Oscilloscope -->
+      <section class="panel-section">
+        <h2 class="section-heading" data-i18n="scaleLabel">ប្រព័ន្ធសំឡេង</h2>
+        <div class="seg-row">
+          <button id="scale-pinpeat" class="btn is-active" data-scale="pinpeat" type="button">Pinpeat 7-TET</button>
+          <button id="scale-just" class="btn" data-scale="just" type="button">Just Ratio</button>
+          <button id="scale-12tet" class="btn" data-scale="12tet" type="button">12-TET</button>
+        </div>
+
+        <div class="control-label-row" style="margin-top: 10px;">
+          <span data-i18n="timbreLabel">លក្ខណៈសំឡេង</span>
+        </div>
+        <div class="tool-grid">
+          <button id="timbre-roneat" class="btn is-active" data-timbre="roneat" type="button" data-i18n="timbreRoneat">រនាតឯក (Modal)</button>
+          <button id="timbre-string" class="btn" data-timbre="string" type="button" data-i18n="timbreString">ខ្សែសំឡេង</button>
+        </div>
+
+        <label class="toggle-row" for="chk-couple">
+          <span data-i18n="couplingLabel">ភ្ជាប់រូបវិទ្យាទៅសំឡេង</span>
+          <input id="chk-couple" type="checkbox" checked />
+        </label>
+
+        <div class="scope-well">
+          <canvas id="scope-canvas" width="296" height="66"></canvas>
+          <div class="scope-labels">
+            <span>u(t) WAVEFORM</span>
+            <span>PHASE PORTRAIT</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Real-Time Numerical Telemetry -->
+      <section class="panel-section">
+        <h2 class="section-heading" data-i18n="secTelemetry">ទិន្នន័យរូបវិទ្យាផ្ទាល់</h2>
+        <div class="telemetry-grid">
+          <span class="tel-key" data-i18n="telFps">ល្បឿនគណនា (FPS)</span>
+          <span id="tel-fps" class="tel-val highlight-cyan">60.0</span>
+
+          <span class="tel-key" data-i18n="telBackend">ម៉ាស៊ីនគណនា</span>
+          <span id="tel-backend" class="tel-val">WebGL2 RGBA16F GPU</span>
+
+          <span class="tel-key" data-i18n="telGridOrBodies">ទំហំប្រព័ន្ធ</span>
+          <span id="tel-domain" class="tel-val">512×384</span>
+
+          <span id="tel-label-1" class="tel-key">ថាមពលស៊ីនេទិចមធ្យម</span>
+          <span id="tel-val-1" class="tel-val">1.840</span>
+
+          <span id="tel-label-2" class="tel-key">អាំងតង់ស៊ីតេកួចអតិបរមា</span>
+          <span id="tel-val-2" class="tel-val highlight-amber">35.9 rad/s</span>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

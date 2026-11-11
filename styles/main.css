@@ -1,0 +1,616 @@
+/* ==========================================================================
+   CONTINUUM LAB — Precision Optical & Acoustic Instrument Design System
+   Palette: Machined Obsidian, Brushed Gunmetal, Warm Ivory, Tungsten Amber,
+            and Optical Phosphor Cyan. Zero purple, zero neon borders.
+   ========================================================================== */
+
+:root {
+  --bg-obsidian: hsl(214, 20%, 6%);
+  --bg-chassis: hsl(214, 16%, 9.5%);
+  --bg-well: hsl(215, 18%, 7.5%);
+  --bg-elevated: hsl(213, 14%, 13.5%);
+  --bg-elevated-hover: hsl(213, 14%, 17%);
+
+  --border-hairline: hsla(40, 20%, 92%, 0.085);
+  --border-strong: hsla(40, 20%, 92%, 0.16);
+
+  --text-primary: hsl(40, 24%, 93%);
+  --text-secondary: hsl(215, 12%, 67%);
+  --text-muted: hsl(215, 10%, 48%);
+
+  --accent-amber: hsl(37, 92%, 53%);
+  --accent-amber-soft: hsla(37, 92%, 53%, 0.15);
+  --accent-cyan: hsl(188, 84%, 53%);
+  --accent-cyan-soft: hsla(188, 84%, 53%, 0.14);
+  --accent-emerald: hsl(160, 72%, 46%);
+
+  --font-sans: 'Kantumruy Pro', 'Noto Sans Khmer', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.55);
+  --shadow-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--bg-obsidian);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tactile anodized micro-grain surface */
+body {
+  background-image: radial-gradient(circle at 20% 0%, hsla(212, 18%, 14%, 0.45), transparent 60%);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Top Instrument Header Bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  background-color: var(--bg-chassis);
+  border-bottom: 1px solid var(--border-hairline);
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--text-primary);
+}
+
+.brand-divider {
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.brand-subtitle {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Precision Tactile Buttons */
+.btn {
+  appearance: none;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-bevel);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 140ms ease, transform 90ms ease, color 140ms ease;
+  user-select: none;
+}
+
+.btn:hover {
+  background: var(--bg-elevated-hover);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.is-active {
+  background: var(--accent-amber-soft);
+  color: var(--accent-amber);
+  border-color: hsla(37, 92%, 53%, 0.42);
+}
+
+.btn-audio.is-active {
+  background: hsla(160, 72%, 46%, 0.16);
+  color: var(--accent-emerald);
+  border-color: hsla(160, 72%, 46%, 0.42);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  display: inline-block;
+}
+
+.btn-audio.is-active .status-dot {
+  background: var(--accent-emerald);
+}
+
+/* Main Studio Workspace */
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 338px;
+  min-height: 0;
+}
+
+/* Left Column: Mode Switcher + Optical Stage + Roneat Resonator Dock */
+.stage-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--border-hairline);
+}
+
+/* Engine Mode Tabs */
+.mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--bg-well);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.mode-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-hairline);
+  padding: 10px 14px;
+  text-align: left;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+  position: relative;
+}
+
+.mode-tab:last-child {
+  border-right: none;
+}
+
+.mode-tab:hover {
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text-primary);
+}
+
+.mode-tab.is-active {
+  background: var(--bg-chassis);
+  color: var(--text-primary);
+}
+
+.mode-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent-amber);
+}
+
+.mode-tab-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.mode-tab-sub {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.mode-tab.is-active .mode-tab-sub {
+  color: var(--accent-amber);
+}
+
+/* Interactive Simulation Viewport */
+.viewport-stage {
+  position: relative;
+  flex: 1;
+  min-height: 410px;
+  background: #090c10;
+  overflow: hidden;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.viewport-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+/* Subtle Equation & Interaction Hint Overlay */
+.stage-hud-top {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  gap: 10px;
+}
+
+.equation-readout {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: hsla(40, 24%, 93%, 0.78);
+  background: rgba(10, 13, 18, 0.72);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border-hairline);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.stage-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  right: 14px;
+  font-size: 12px;
+  color: hsla(40, 20%, 90%, 0.72);
+  background: rgba(10, 13, 18, 0.68);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border-hairline);
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  width: fit-content;
+  max-width: calc(100% - 28px);
+}
+
+/* Bottom Roneat Ek / Waveguide Resonator Bridge */
+.resonator-dock {
+  background: var(--bg-chassis);
+  border-top: 1px solid var(--border-hairline);
+  padding: 10px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resonator-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.resonator-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.resonator-caption {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.roneat-bars {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 7px;
+  align-items: end;
+  height: 52px;
+}
+
+.roneat-bar {
+  appearance: none;
+  border: 1px solid hsla(37, 45%, 62%, 0.24);
+  background: linear-gradient(180deg, hsl(32, 24%, 22%) 0%, hsl(28, 22%, 15%) 100%);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 4px;
+  box-shadow: var(--shadow-bevel);
+  transition: transform 80ms ease, background 140ms ease, border-color 140ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.roneat-bar:hover {
+  border-color: hsla(37, 85%, 56%, 0.55);
+  background: linear-gradient(180deg, hsl(33, 28%, 26%) 0%, hsl(29, 24%, 18%) 100%);
+}
+
+.roneat-bar.is-struck {
+  transform: translateY(2px) scale(0.985);
+  border-color: var(--accent-amber);
+  background: linear-gradient(180deg, hsla(37, 92%, 53%, 0.42) 0%, hsl(30, 30%, 19%) 100%);
+}
+
+.bar-degree {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.bar-freq {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Right Column: Precision Instrument Controls & Telemetry */
+.control-rail {
+  background: var(--bg-chassis);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.panel-section {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+}
+
+.section-heading {
+  margin: 0 0 9px 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Preset & Tool Pill Grid */
+.preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preset-btn {
+  width: 100%;
+  justify-content: space-between;
+  text-align: left;
+  padding: 7px 10px;
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.seg-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.seg-row .btn {
+  padding: 5px 6px;
+  font-size: 11.5px;
+}
+
+/* Precision Sliders */
+.control-group {
+  margin-bottom: 10px;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.control-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  background: var(--bg-well);
+  border-radius: 3px;
+  box-shadow: var(--shadow-inset);
+  outline: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  border: 2px solid var(--accent-amber);
+  cursor: pointer;
+  transition: transform 100ms ease;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.toggle-row input[type='checkbox'] {
+  accent-color: var(--accent-amber);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* Oscilloscope + Lissajous Phase Portrait Well */
+.scope-well {
+  margin-top: 10px;
+  background: var(--bg-well);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  box-shadow: var(--shadow-inset);
+}
+
+.scope-well canvas {
+  width: 100%;
+  height: 66px;
+  display: block;
+  border-radius: 3px;
+}
+
+.scope-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  padding: 2px 4px 0;
+}
+
+/* Telemetry Readout Table */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: 5px;
+  column-gap: 10px;
+  font-size: 12px;
+}
+
+.tel-key {
+  color: var(--text-secondary);
+}
+
+.tel-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.tel-val.highlight-cyan {
+  color: var(--accent-cyan);
+}
+
+.tel-val.highlight-amber {
+  color: var(--accent-amber);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 920px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-column {
+    border-right: none;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .viewport-stage {
+    min-height: 370px;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .brand-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .mode-tab {
+    padding: 8px 8px;
+  }
+
+  .mode-tab-sub {
+    display: none;
+  }
+
+  .roneat-bars {
+    gap: 4px;
+  }
+
+  .bar-freq {
+    display: none;
+  }
+}

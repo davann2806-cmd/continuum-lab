@@ -1,0 +1,25 @@
+{
+  "name": "continuum-lab",
+  "version": "1.0.0",
+  "description": "Continuum Lab — Real-time WebGL2 Navier-Stokes fluid dynamics, 2D FDTD wave optics, 4th-order Yoshida symplectic N-body gravity, and Karplus-Strong Pinpeat physical-modeling acoustics (Khmer & English).",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "keywords": [
+    "webgl2",
+    "navier-stokes",
+    "fluid-dynamics",
+    "wave-equation",
+    "n-body",
+    "yoshida-symplectic",
+    "karplus-strong",
+    "webaudio",
+    "khmer",
+    "pinpeat",
+    "physics-simulation"
+  ],
+  "license": "MIT"
+}
