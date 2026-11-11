@@ -1,5 +1,7 @@
 # CONTINUUM LAB — មន្ទីរពិសោធន៍រូបវិទ្យាគណនា និងសំឡេងរូបវិទ្យាពេលវេលាពិត
 
+**🌐 តំណភ្ជាប់សាកល្បងផ្ទាល់លើទូរសព្ទ និងកុំព្យូទ័រ (Live Public Web App):** [https://davann2806-cmd.github.io/continuum-lab/](https://davann2806-cmd.github.io/continuum-lab/)
+
 **Continuum Lab** គឺជាកម្មវិធីពិសោធន៍រូបវិទ្យាគណនា និងសំយោគសំឡេងរូបវិទ្យាពេលវេលាពិត (Real-Time Computational Physics & Physical-Modeling Acoustics Studio) ដែលសរសេរឡើងពីមូលដ្ឋានគណិតវិទ្យាផ្ទាល់ **ដោយមិនប្រើប្រាស់ Library ខាងក្រៅសូម្បីតែមួយ (Zero External Dependencies)** ព្រមទាំងគាំទ្រទាំង **ភាសាខ្មែរ** និង **English**។
 
 **Continuum Lab** is a zero-dependency real-time computational physics bench and physical-modeling musical synthesizer built from mathematical first principles using raw **WebGL2 GLSL floating-point shaders**, **isotropic 2D FDTD wave optics**, **4th-order Yoshida symplectic celestial mechanics**, and **WebAudio Karplus–Strong / Euler–Bernoulli modal synthesis** tuned to traditional **Khmer Pinpeat (ពិណពាទ្យខ្មែរ 7-TET)**, Just Intonation, and 12-TET scales.
